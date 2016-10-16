@@ -17,7 +17,7 @@ $mkdir /workspace/vagrant
 $cd /workspace/vagrant
 $vagrant box add vagrant_ansible https://github.com/2creatives/vagrant-centos/releases/download/v6.4.2/centos64-x86_64-20140116.box
 # 7系の場合はこっち
-#$vagrant box add vagrant_ansible https://github.com/vezzoni/vagrant-vboxes/releases/download/0.0.1/centos-7-x86_64.box
+$vagrant box add vagrant_ansible https://github.com/tommy-muehle/puppet-vagrant-boxes/releases/download/1.1.0/centos-7.0-x86_64.box
 ```
 
 vagrant upで起動
