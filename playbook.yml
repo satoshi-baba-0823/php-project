@@ -1,0 +1,96 @@
+- hosts: 127.0.0.1
+  connection: local
+  sudo: yes
+  vars:
+    mysql_user_name: vagrant
+    mysql_user_password: vagrant
+  tasks:
+    
+    #
+    # base
+    #
+    - name: Install basepackage
+      yum: name={{ item }} state=present
+      with_items:
+        - wget
+        - ntp
+        - vim
+        
+    #
+    # Apache
+    #
+    - name: Install Apache
+      yum: name=httpd
+
+    - name: Start Apache
+      service: name=httpd state=started enabled=yes
+
+    - name: Setting DocumentRoot
+      replace: 
+        dest=/etc/httpd/conf/httpd.conf
+        regexp='DocumentRoot "/var/www/html"'
+        replace='DocumentRoot "/vagrant"'
+      notify:
+        - restart httpd
+
+    - name: enable htaccess
+      replace: 
+        dest=/etc/httpd/conf/httpd.conf
+        regexp='AllowOverride None'
+        replace='AllowOverride All'
+      notify:
+        - restart httpd
+
+    #
+    # PHP
+    #
+    - name: install PHP
+      yum: name={{item}}
+      with_items:
+        - php
+        - php-mbstring
+        - php-mysql
+
+    - name: setting PHP
+      replace: >
+        dest=/etc/php.ini
+        regexp="^;date\.timezone ="
+        replace="date.timezone = Asia/Tokyo"
+
+    #
+    # MySQL5.6
+    #
+    - name: repo MySQL5.6
+      command: >
+        yum -y install http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+        creates=/etc/yum.repos.d/mysql-community.repo
+
+    - name: install MySQL
+      yum: name={{item}}
+      with_items:
+        - mysql-server
+        - MySQL-python
+
+    - name: start MySQL
+      service: name=mysqld state=started enabled=yes
+
+    - name: add user MySQL
+      mysql_user: name={{ mysql_user_name }} password={{ mysql_user_password }} priv=*.*:ALL
+
+    #
+    # phpMyAdmin
+    #
+    - name: install phpMyAdmin
+      yum: name=phpMyAdmin enablerepo=epel
+
+    - name: change access
+      replace: >
+        dest=/etc/httpd/conf.d/phpMyAdmin.conf
+        regexp=" Deny from All"
+        replace=" #Deny from All"
+      notify:
+        - restart httpd
+
+  handlers:
+    - name: restart httpd
+      service: name=httpd state=restarted
