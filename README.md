@@ -1,47 +1,51 @@
-# このリポジトリは？
-Vagrantとansibleを利用して、PHPの環境を構築するソースを集めたリポジトリ
+# vagrant_ansible_laravelについて
 
-# 前提条件
-使用するマシンのOSはWindows
-macの場合は適宜書き換えて使用してください。
-またマシンにVagrantとVirtualBoxが必要です。
-ない場合は下記を参考にして、セットアップしてください。
-http://qiita.com/satoshi-baba-0823/items/44099118678e02fde124
+Laravel5を開発するのにAnsibleを利用して環境を作る為に作りました。  
+なにか不具合等あればご連絡ください。  
+  
+PHPをビルドするので初回の立ち上げは時間がかかります。   
+利用される時はLaravel推奨のVersionを利用して下さい。
 
-# 使い方
-コマンドプロンプトにて下記を実行。
+## 初期設定時のURL
+Laravel : [laravel.dev](https://laravel.dev/)  
+phpPgAdmin : [laravel.dev:8080](laravel.dev:8080)  
+- USER:vagrant
+- PASS:vagrant
 
-```
-$mkdir /workspace
-$mkdir /workspace/vagrant
-$cd /workspace/vagrant
-$vagrant box add vagrant_ansible https://github.com/2creatives/vagrant-centos/releases/download/v6.4.2/centos64-x86_64-20140116.box
-# 7系の場合はこっち
-$vagrant box add vagrant_ansible https://github.com/tommy-muehle/puppet-vagrant-boxes/releases/download/1.1.0/centos-7.0-x86_64.box
-```
+## 環境
+- phpenv
+- PHP >= 5.4 デフォルトは 5.6.20
+- PostgreSQL9.5
+- phpPgAdmin
+- laravel5
+- git
+- vim
+- ImageMagick
+- zsh
+- zsh-oh-my-zsh
 
-vagrant upで起動
-```
-$vagrant up
-```
+## 設定
 
-ページ確認
-http://192.168.33.10/
+ansible/group_vars/all.ymlで各種設定ができます。
+ここで設定された値を元にVagrantの設定と環境の設定を行っています。
 
-vagrant haltで終了
-```
-$vagrant halt
-```
+## 起動前にVagrantのプラグインをインストール
 
-詳しいことは下記ページで
-http://qiita.com/satoshi-baba-0823/items/b8208a3c27f8ea321fc5
+ホストを設定するためにVagrantのプラグインhostsupdaterを利用しています。  
+下記コマンドでインストールしておいてください。  
 
+`vagrant plugin install vagrant-hostsupdater`
 
-#Vagrantのコマンド
-```
-#起動
-$vagrant up
+## vagrantについて
 
-#終了
-$vagrant halt
-```
+### 起動
+
+`vagrant up`
+
+### 停止
+
+`vagrant halt`
+
+### 再起動
+
+`vagrant reload`
